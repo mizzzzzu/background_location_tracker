@@ -23,6 +23,6 @@
             "program": "lib/runner/main.dart",
             "type": "dart",
             "flutterMode": "release"
-        }
+        },
     ]
 }

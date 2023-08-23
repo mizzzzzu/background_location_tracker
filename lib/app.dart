@@ -44,6 +44,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _listenLocation();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    BackgroundLocation.stopLocationService();
+  }
+
   void _listenLocation() async {
     if (!_isServiceRunning && await _locationClient.isServiceEnabled()) {
       _isServiceRunning = true;
