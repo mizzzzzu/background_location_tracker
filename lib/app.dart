@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       BackgroundLocation.getLocationUpdates((location) {
         LatLng newLocation = LatLng(location.latitude!, location.longitude!);
         FileManager.writeToLogFile(
-            "$newLocation\n timestamp: ${location.time}");
+            "$newLocation\n time: ${DateTime.now().toString()} \n");
         setState(() => _currPosition = newLocation);
         _points.add(_currPosition!);
       });
@@ -82,37 +82,53 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context, _) {
             return _currPosition == null
                 ? const CircularProgressIndicator()
-                : FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      center: _currPosition,
-                    ),
+                : Stack(
                     children: [
-                      TileLayer(
-                        urlTemplate:
-                            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        userAgentPackageName: 'com.geolocation.app',
-                      ),
-                      PolylineLayer(
-                        polylineCulling: false,
-                        polylines: [
-                          Polyline(
-                            points: _points,
-                            color: Colors.blue,
-                            strokeWidth: 4,
+                      FlutterMap(
+                        mapController: _mapController,
+                        options: MapOptions(
+                          center: _currPosition,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                            userAgentPackageName: 'com.geolocation.app',
                           ),
+                          PolylineLayer(
+                            polylineCulling: false,
+                            polylines: [
+                              Polyline(
+                                points: _points,
+                                color: Colors.blue,
+                                strokeWidth: 4,
+                              ),
+                            ],
+                          ),
+                          if (_currPosition != null)
+                            MarkerLayer(
+                              markers: [
+                                Marker(
+                                  point: _currPosition!,
+                                  builder: (context) =>
+                                      const Icon(Icons.location_on),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
-                      if (_currPosition != null)
-                        MarkerLayer(
-                          markers: [
-                            Marker(
-                              point: _currPosition!,
-                              builder: (context) =>
-                                  const Icon(Icons.location_on),
-                            ),
-                          ],
-                        ),
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        child: IconButton(
+                            onPressed: () async {
+                              print(await FileManager.readLogFile());
+                            },
+                            icon: const Icon(
+                              Icons.download,
+                              size: 25,
+                            )),
+                      ),
                     ],
                   );
           },

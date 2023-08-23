@@ -4,8 +4,11 @@ import 'package:path_provider/path_provider.dart';
 
 class FileManager {
   static Future<void> writeToLogFile(String log) async {
-    final file = await _getTempLogFile();
-    await file.writeAsString(log, mode: FileMode.append);
+    final generalDownloadDir = Directory('/storage/emulated/0/Download');
+    File txt =
+        await File('${generalDownloadDir.path}/background_logs.txt').create();
+
+    await txt.writeAsString(log, mode: FileMode.append);
   }
 
   static Future<String> readLogFile() async {
