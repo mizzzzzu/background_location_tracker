@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+
 class FileManager {
   static Future<void> writeToLogFile(String log) async {
     final file = await _getTempLogFile();
@@ -14,6 +15,7 @@ class FileManager {
 
   static Future<File> _getTempLogFile() async {
     final directory = await getTemporaryDirectory();
+    print(directory.path);
     final file = File('${directory.path}/log.txt');
     if (!await file.exists()) {
       await file.writeAsString('');
