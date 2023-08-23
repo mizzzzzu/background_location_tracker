@@ -1,11 +1,18 @@
+import 'package:background_location/background_location.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart' as location;
 import 'package:location/location.dart';
 
 class LocationService {
-  final Location _location = Location();
+  final BackgroundLocation _backgroundLocation = BackgroundLocation();
+  final location.Location _location = location.Location();
 
-  LatLng mapper(event) => LatLng(event.latitude!, event.longitude!);
-  Stream<LatLng> get locationStream => _location.onLocationChanged.map(mapper);
+  LatLng mapper(event) => LatLng(event.latitude, event.longitude);
+  dynamic get locationStream =>
+      BackgroundLocation.getLocationUpdates((location) {
+        print(location.latitude);
+        return mapper(location);
+      });
 
   void init() async {
     final serviceEnabled = await _location.serviceEnabled();
@@ -17,10 +24,12 @@ class LocationService {
     }
 
     if (permissionStatus == PermissionStatus.granted) {
-      await _location.enableBackgroundMode();
-      await _location.changeNotificationOptions(
-        title: 'Geolocation',
-        subtitle: 'Geolocation detection',
+      await await BackgroundLocation.startLocationService();
+
+      await BackgroundLocation.setAndroidNotification(
+        title: 'Background service is running',
+        message: 'Background location in progress',
+        icon: '@mipmap/ic_launcher',
       );
     }
   }

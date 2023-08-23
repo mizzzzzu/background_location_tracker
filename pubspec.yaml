@@ -18,9 +18,9 @@ dependencies:
   location: ^5.0.3
   flutter_map: ^5.0.0
   permission_handler: ^10.4.3
-  background_locator_2: ^2.0.6
   path_provider: ^2.1.0
   location_permissions: ^4.0.1
+  background_location: ^0.11.8
 
 dev_dependencies:
   flutter_test:
